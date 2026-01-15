@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataLens AI | AI-Powered Data Analytics</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@1.3.0/dist/chartjs-chart-matrix.min.js"></script>
+
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <h1>DataLens <span class="ai-text">AI</span></h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="#"><i class="fas fa-history"></i> History</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="#"><i class="fas fa-question-circle"></i> Help</a></li>
+                <li class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Alex+Smith&background=6C63FF&color=fff" alt="User">
+                    <span>Alex Smith</span>
+                </li>
+            </ul>
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container main-content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h2>Upload your dataset and get instant <span class="highlight">AI-powered insights</span></h2>
+                <p>DataLens AI analyzes your data, uncovers hidden patterns, and provides actionable insights in
+                    seconds.</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">24+</span>
+                        <span class="stat-label">Analytics Models</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">99.8%</span>
+                        <span class="stat-label">Accuracy</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">&lt;10s</span>
+                        <span class="stat-label">Processing Time</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Upload Section -->
+        <section class="upload-section">
+            <div class="upload-card" id="uploadCard">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <h3>Upload Your Dataset</h3>
+                <p>Drag and drop your CSV file here, or click to browse</p>
+                <div class="file-input-wrapper">
+                    <input type="file" id="fileInput" accept=".csv">
+                    <label for="fileInput" class="browse-btn">Browse Files</label>
+                </div>
+                <p class="file-info">Maximum file size: 50MB. Supported format: CSV only.</p>
+                <div class="selected-file" id="selectedFile">
+                    <i class="fas fa-file-csv"></i>
+                    <div class="file-details">
+                        <span class="file-name">No file selected</span>
+                        <span class="file-size">-</span>
+                    </div>
+                    <button class="clear-btn" id="clearFileBtn"><i class="fas fa-times"></i></button>
+                </div>
+                <button class="analyze-btn" id="analyzeBtn" disabled>
+                    <span class="btn-text">Analyze with AI</span>
+                    <div class="loading-spinner hidden">
+                        <div class="spinner-dot"></div>
+                        <div class="spinner-dot"></div>
+                        <div class="spinner-dot"></div>
+                    </div>
+                </button>
+            </div>
+        </section>
+
+        <!-- Error Display -->
+        <div class="error-container hidden" id="errorContainer">
+            <div class="error-card">
+                <div class="error-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Error</h3>
+                </div>
+                <p id="errorMessage">An error occurred while processing your file.</p>
+                <button class="error-dismiss" id="dismissErrorBtn">Dismiss</button>
+            </div>
+        </div>
+
+        <!-- Dashboard Section (Initially Hidden) -->
+        <section class="dashboard hidden" id="dashboard">
+            <div class="section-header">
+                <h2>Dataset Overview</h2>
+                <div class="last-updated">
+                    <i class="far fa-clock"></i>
+                    <span>Last updated: <span id="updateTime">Just now</span></span>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-table"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h4>Dataset Shape</h4>
+                        <p class="stat-value" id="datasetShape">-</p>
+                        <p class="stat-desc">Rows × Columns</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-columns"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h4>Columns Count</h4>
+                        <p class="stat-value" id="columnsCount">-</p>
+                        <p class="stat-desc">Total features</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h4>Missing Values</h4>
+                        <p class="stat-value" id="missingValues">-</p>
+                        <p class="stat-desc">Total missing cells</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h4>Data Types</h4>
+                        <p class="stat-value" id="dataTypes">-</p>
+                        <p class="stat-desc">Numeric, Categorical, etc.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-section">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Missing Values by Column</h3>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <span class="legend-color" style="background-color: #6C63FF;"></span>
+                                <span>Missing Values</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="missingValuesChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Correlation Matrix</h3>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <span class="legend-color"
+                                    style="background: linear-gradient(to right, #0f172a, #3b82f6, #8b5cf6); width: 100px;"></span>
+                                <span>Low to High Correlation</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="correlationChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Insights -->
+            <section class="insights-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-robot"></i> AI Insights</h2>
+                    <div class="insights-actions">
+                        <button class="insight-action-btn">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                        <button class="insight-action-btn">
+                            <i class="fas fa-share-alt"></i> Share
+                        </button>
+                    </div>
+                </div>
+                <div class="insights-card">
+                    <div class="insights-header">
+                        <div class="ai-tag">
+                            <i class="fas fa-bolt"></i>
+                            <span>AI-Generated Insights</span>
+                        </div>
+                        <div class="confidence-level">
+                            <span>Confidence: <strong>94%</strong></span>
+                        </div>
+                    </div>
+                    <div class="insights-content">
+                        <div id="aiInsights">
+                            <p>📊 <strong>Dataset Overview:</strong> Upload a CSV file to get AI-powered insights about
+                                your dataset.</p>
+                            <p>🔍 <strong>What you'll get:</strong></p>
+                            <ul>
+                                <li>Dataset statistics and summary</li>
+                                <li>Missing values analysis with visualization</li>
+                                <li>Correlation matrix heatmap</li>
+                                <li>AI-generated insights and recommendations</li>
+                            </ul>
+                            <p>🚀 <strong>Get started:</strong> Drag and drop your CSV file above to begin analysis.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>DataLens <span class="ai-text">AI</span></h3>
+                </div>
+                <p>© 2023 DataLens AI. All rights reserved. <span class="footer-links">Privacy Policy | Terms of Service
+                        | Contact</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/static/main.js"></script>
+</body>
+
+</html>
